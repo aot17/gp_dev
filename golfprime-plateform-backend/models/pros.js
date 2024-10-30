@@ -12,10 +12,13 @@ module.exports = (sequelize, DataTypes) => {
       Pros.hasMany(models.Bookings, {
         foreignKey: 'pro_id'
       });
-
       Pros.hasMany(models.Courses, {
         foreignKey: 'pro_id'
       });
+      Pros.hasOne(models.Authentication, {
+        foreignKey: 'pro_id',
+        onDelete: 'CASCADE'
+      })
     }
   }
   Pros.init({

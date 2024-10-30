@@ -1,6 +1,40 @@
 const express = require('express');
 const router = express.Router();
+const authMiddleware = require('../middleware/authMiddleware');
 const { Customers } = require('../models');
+
+// GET Customer Profile - Restricted to Customers
+router.get('/profile', authMiddleware(['customer']), async (req, res) => {
+  try {
+    const customer = await Customers.findByPk(req.user.userId, {
+      attributes: ['first_name', 'last_name', 'email', 'phone', 'gender'],
+    });
+
+    if (!customer) {
+      return res.status(404).json({ message: 'Customer not found' });
+    }
+
+    res.json(customer);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to retrieve customer profile' });
+  }
+});
+
+// GET Customer Bookings - Restricted to Customers
+router.get('/bookings', authMiddleware(['customer']), async (req, res) => {
+  try {
+    const bookings = await Bookings.findAll({
+      where: { customer_id: req.user.userId },
+      include: [{ model: Customers, attributes: ['name'] }] // Optional
+    });
+
+    res.json(bookings);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to retrieve bookings' });
+  }
+});
 
 // GET all customers
 router.get('/', async (req, res) => {

@@ -11,7 +11,11 @@ module.exports = (sequelize, DataTypes) => {
       });
       Customers.hasMany(models.Bookings, {
         foreignKey: 'customer_id'
-      })
+      });
+      Customers.hasOne(models.Authentication, {
+        foreignKey: 'customer_id',
+        onDelete: 'CASCADE'
+      });
     }
   }
   Customers.init({

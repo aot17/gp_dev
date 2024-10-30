@@ -1,24 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import CustomerLogin from './components/CustomerLogin';
+import ProLogin from './components/ProLogin';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <header className="App-header">
+          <h1>Golf Prime Platform</h1>
+          <nav>
+            <Link to="/customer-login" style={{ margin: '0 10px' }}>Customer Login</Link>
+            <Link to="/pro-login" style={{ margin: '0 10px' }}>Pro Login</Link>
+          </nav>
+        </header>
+
+        <main>
+          <Routes>
+            <Route path="/customer-login" element={<CustomerLogin />} />
+            <Route path="/pro-login" element={<ProLogin />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
   );
 }
 
