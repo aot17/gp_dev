@@ -20,13 +20,6 @@ function LandingPage() {
 
   return (
     <div className="landing-page">
-      <header className="landing-header">
-        <div className="login-links">
-          <Link to="/customer-login" className="login-link">Customer Login</Link>
-          <Link to="/pro-login" className="login-link">Pro Login</Link>
-        </div>
-      </header>
-
       <main>
         <h1>Welcome to Golf Prime Platform</h1>
         <h2>Affiliated Pros</h2>

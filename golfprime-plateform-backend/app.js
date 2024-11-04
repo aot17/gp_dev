@@ -23,6 +23,10 @@ const proRoutes = require('./routes/proRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const authRoutes = require('./routes/authRoutes');
+const unavailabilitiesRoutes = require('./routes/unavailabilitiesRoutes');
+const workinghoursRoutes = require('./routes/workinghoursRoutes');
+const availabilityRoutes = require('./routes/availabilityRoutes');
+
 
 // Use routes
 app.use('/golf', golfRoutes);
@@ -31,6 +35,10 @@ app.use('/pro', proRoutes);
 app.use('/booking', bookingRoutes);
 app.use('/course', courseRoutes);
 app.use('/auth', authRoutes);
+app.use('/unavailabilities', unavailabilitiesRoutes);
+app.use('/workinghours', workinghoursRoutes);
+app.use('/availability', availabilityRoutes);
+
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

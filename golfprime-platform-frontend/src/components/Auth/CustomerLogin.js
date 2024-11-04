@@ -1,7 +1,7 @@
 // src/components/CustomerLogin.js
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 function CustomerLogin() {
   const [email, setEmail] = useState('');
@@ -39,6 +39,9 @@ function CustomerLogin() {
         <button type="submit">Login</button>
       </form>
       <p>{message}</p>
+      <p>
+      Pas encore de compte ? <Link to="/customer-signup">Inscrivez-vous !</Link>
+      </p>
     </div>
   );
 }

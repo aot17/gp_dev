@@ -15,6 +15,12 @@ module.exports = (sequelize, DataTypes) => {
       Pros.hasMany(models.Courses, {
         foreignKey: 'pro_id'
       });
+      Pros.hasMany(models.Unavailabilities, {
+        foreignKey: 'pro_id'
+      });
+      Pros.hasMany(models.WorkingHours, {
+        foreignKey: 'pro_id'
+      });
       Pros.belongsTo(models.Authentication, {
         foreignKey: 'auth_id',
         onDelete: 'CASCADE'

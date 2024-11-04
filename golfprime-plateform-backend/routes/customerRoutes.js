@@ -1,8 +1,9 @@
 // router for handling customer-related routes in the Express app
 const express = require('express');
+const bcrypt = require('bcryptjs'); // Add this line
 const router = express.Router(); // create a new router object to handle routes for customer-related operations
 const authMiddleware = require('../middleware/authMiddleware'); // middleware to enforce authentication and role-based access control
-const { Customers, Bookings, Pros, Golfs } = require('../models');
+const { Customers, Bookings, Pros, Golfs, Authentication } = require('../models');
 
 // GET Customer Profile - Restricted to Customers
 router.get('/profile', authMiddleware(['customer']), async (req, res) => { // Ensures that only authenticated users with role 'customer' can access this route
@@ -74,6 +75,25 @@ router.put('/:id', async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({ error: 'Failed to update customer.' });
+  }
+});
+
+// POST a new customer (Signup)
+router.post('/signup', async (req, res) => {
+  const { first_name, last_name, gender, email, phone, password } = req.body;
+
+  try {
+    // Hash password and create Authentication record
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const auth = await Authentication.create({ hashed_password: hashedPassword, role: 'customer' });
+
+    // Create customer with linked auth_id
+    const customer = await Customers.create({ first_name, last_name, gender, email, phone, auth_id: auth.auth_id });
+
+    res.status(201).json({ message: 'Customer created successfully', customer });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to create customer' });
   }
 });
 
