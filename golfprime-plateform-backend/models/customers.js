@@ -12,8 +12,8 @@ module.exports = (sequelize, DataTypes) => {
       Customers.hasMany(models.Bookings, {
         foreignKey: 'customer_id'
       });
-      Customers.hasOne(models.Authentication, {
-        foreignKey: 'customer_id',
+      Customers.belongsTo(models.Authentication, {
+        foreignKey: 'auth_id',
         onDelete: 'CASCADE'
       });
     }
@@ -48,6 +48,15 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(20),
       allowNull: true,
     },
+    auth_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Authentication',
+        key: 'auth_id'
+      },
+      onDelete: 'CASCADE',
+    }
   }, {
     sequelize,
     modelName: 'Customers',

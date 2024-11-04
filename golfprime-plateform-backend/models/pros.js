@@ -15,8 +15,8 @@ module.exports = (sequelize, DataTypes) => {
       Pros.hasMany(models.Courses, {
         foreignKey: 'pro_id'
       });
-      Pros.hasOne(models.Authentication, {
-        foreignKey: 'pro_id',
+      Pros.belongsTo(models.Authentication, {
+        foreignKey: 'auth_id',
         onDelete: 'CASCADE'
       })
     }
@@ -52,6 +52,15 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    auth_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Authentication',
+        key: 'auth_id'
+      },
+      onDelete: 'CASCADE',
+    }
   }, {
     sequelize,
     modelName: 'Pros', 

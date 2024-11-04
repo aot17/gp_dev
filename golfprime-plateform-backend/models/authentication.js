@@ -5,13 +5,11 @@ module.exports = (sequelize, DataTypes) => {
   class Authentication extends Model {
     static associate(models) {
       // Define associations here
-      Authentication.belongsTo(models.Customers, {
-        foreignKey: 'customer_id',
-        onDelete: 'CASCADE',
+      Authentication.hasOne(models.Customers, {
+        foreignKey: 'auth_id',
       });
-      Authentication.belongsTo(models.Pros, {
-        foreignKey: 'pro_id',
-        onDelete: 'CASCADE',
+      Authentication.hasOne(models.Pros, {
+        foreignKey: 'auth_id',
       });
     }
   }
@@ -24,6 +22,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     hashed_password: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    role: {
+      type: DataTypes.ENUM('customer', 'pro', 'admin'),
       allowNull: false,
     },
   }, {

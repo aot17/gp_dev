@@ -6,27 +6,30 @@ async function populateCustomers() {
   try {
     await sequelize.sync({ force: false }); // Ensure tables are synced
 
-    // Sample customer data
     const customers = [
       { first_name: 'Jane', last_name: 'Doe', gender: 'female', email: 'jane.doe@example.com', phone: '123-456-7890', password: 'password123' },
       { first_name: 'John', last_name: 'Smith', gender: 'male', email: 'john.smith@example.com', phone: '987-654-3210', password: 'password123' }
     ];
 
     for (const customerData of customers) {
-      // Step 1: Create a new customer
       const { password, ...customerInfo } = customerData;
-      const customer = await Customers.create(customerInfo);
 
       // Step 2: Hash the customer's password
       const hashedPassword = await bcrypt.hash(password, 10);
 
       // Step 3: Store hashed password in Authentication table
-      await Authentication.create({
-        customer_id: customer.customer_id,  // Link to the customer
+      const authRecord = await Authentication.create({
         hashed_password: hashedPassword,
+        role: 'customer'  // Specify role
       });
 
-      console.log(`Added customer ${customer.first_name} ${customer.last_name} with hashed password.`);
+      // Step 4: Create a new customer record linked to the auth_id
+      await Customers.create({
+        ...customerInfo,
+        auth_id: authRecord.auth_id  // Link auth_id
+      });
+
+      console.log(`Added customer ${customerInfo.first_name} ${customerInfo.last_name} with hashed password.`);
     }
 
     console.log('Customer population complete.');

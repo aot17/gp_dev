@@ -1,11 +1,13 @@
 // src/components/CustomerLogin.js
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function CustomerLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,6 +21,10 @@ function CustomerLogin() {
       const token = response.data.token;
       localStorage.setItem('customerToken', token); // Store token for later use
       setMessage('Login successful!');
+      
+      // Redirect to profile page after successful login
+      navigate('/customer-profile');
+
     } catch (error) {
       setMessage('Login failed: ' + error.response?.data?.message || 'Unknown error');
     }
