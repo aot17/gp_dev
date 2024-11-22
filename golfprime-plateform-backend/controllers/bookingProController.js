@@ -5,7 +5,7 @@ const { toUTC } = require('../services/dateService');
 // Pro creates a booking for a client they’ve previously worked with
 exports.createBooking = async (req, res) => {
   const { pro_id, customer_id, Date_start, Date_end } = req.body;
-  const requesterId = req.user.userId;
+  const requesterId = req.user.id;
 
   try {
     // Convert incoming dates to UTC
