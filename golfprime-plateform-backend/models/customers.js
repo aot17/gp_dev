@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
         through: models.GolfsCustomers,
         foreignKey: 'customer_id'
       });
+      Customers.belongsToMany(models.Pros, {
+        through: models.ProsCustomers,
+        foreignKey: 'customer_id'
+      });
       Customers.hasMany(models.Bookings, {
         foreignKey: 'customer_id'
       });
