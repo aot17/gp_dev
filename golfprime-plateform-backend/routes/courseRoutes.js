@@ -1,70 +1,21 @@
+// routes/courseRoutes.js
 const express = require('express');
 const router = express.Router();
-const { Courses } = require('../models');
+const courseController = require('../controllers/courseController');
 
 // GET all courses
-router.get('/', async (req, res) => {
-  try {
-    const courses = await Courses.findAll();
-    res.json(courses);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to retrieve courses.' });
-  }
-});
+router.get('/', courseController.getAllCourses);
 
 // POST a new course
-router.post('/', async (req, res) => {
-  try {
-    const course = await Courses.create(req.body);
-    res.json(course);
-  } catch (err) {
-    console.error('Error details:', err);
-    res.status(500).json({ error: 'Failed to create course.' });
-  }
-});
+router.post('/', courseController.createCourse);
 
 // GET a specific course by ID
-router.get('/:id', async (req, res) => {
-  try {
-    const course = await Courses.findByPk(req.params.id);
-    if (course) {
-      res.json(course);
-    } else {
-      res.status(404).json({ error: 'Course not found.' });
-    }
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to retrieve course.' });
-  }
-});
+router.get('/:id', courseController.getCourseById);
 
-// PUT update a course
-router.put('/:id', async (req, res) => {
-  try {
-    const course = await Courses.findByPk(req.params.id);
-    if (course) {
-      await course.update(req.body);
-      res.json(course);
-    } else {
-      res.status(404).json({ error: 'Course not found.' });
-    }
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to update course.' });
-  }
-});
+// PUT to update a specific course by ID
+router.put('/:id', courseController.updateCourse);
 
-// DELETE a course
-router.delete('/:id', async (req, res) => {
-  try {
-    const course = await Courses.findByPk(req.params.id);
-    if (course) {
-      await course.destroy();
-      res.json({ message: 'Course deleted.' });
-    } else {
-      res.status(404).json({ error: 'Course not found.' });
-    }
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to delete course.' });
-  }
-});
+// DELETE a specific course by ID
+router.delete('/:id', courseController.deleteCourse);
 
 module.exports = router;

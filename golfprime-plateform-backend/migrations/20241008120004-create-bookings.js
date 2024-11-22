@@ -22,6 +22,7 @@ module.exports = {
       },
       customer_id: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
           model: 'Customers',
           key: 'customer_id'
@@ -31,6 +32,7 @@ module.exports = {
       },
       pro_id: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
           model: 'Pros',
           key: 'pro_id'

@@ -9,10 +9,20 @@ module.exports = (sequelize, DataTypes) => {
         through: models.GolfsPros,
         foreignKey: 'pro_id'
       });
+      Pros.belongsToMany(models.Customers, {
+        through: models.ProsCustomers,
+        foreignKey: 'pro_id'
+      });
       Pros.hasMany(models.Bookings, {
         foreignKey: 'pro_id'
       });
       Pros.hasMany(models.Courses, {
+        foreignKey: 'pro_id'
+      });
+      Pros.hasMany(models.Unavailabilities, {
+        foreignKey: 'pro_id'
+      });
+      Pros.hasMany(models.WorkingHours, {
         foreignKey: 'pro_id'
       });
       Pros.belongsTo(models.Authentication, {
