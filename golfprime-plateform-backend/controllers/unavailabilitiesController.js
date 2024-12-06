@@ -1,10 +1,9 @@
-// controllers/unavailabilitiesController.js
 const { Unavailabilities } = require('../models');
 
 // Add a new unavailability for a pro
 exports.addUnavailability = async (req, res) => {
   const { Date_start, Date_end, reason } = req.body;
-  const pro_id = req.user.userId; // Extract the pro ID from the authenticated user
+  const pro_id = req.user.id; // Extract the pro_id from the authenticated user
 
   try {
     // Create a new unavailability record in the database
@@ -18,7 +17,7 @@ exports.addUnavailability = async (req, res) => {
 
 // Get all unavailabilities for a specific pro
 exports.getProUnavailabilities = async (req, res) => {
-  const { pro_id } = req.params; // Get the pro ID from the route parameter
+  const { pro_id } = req.params; // Get the pro_id from the route parameter
 
   try {
     // Retrieve all unavailabilities for the specified pro, ordered by `Date_start`

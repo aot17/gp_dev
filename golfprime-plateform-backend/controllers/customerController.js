@@ -1,8 +1,7 @@
-// controllers/customerController.js
 const bcrypt = require('bcryptjs');
 const { Customers, Bookings, Pros, Golfs, Authentication } = require('../models');
 
-// Controller to get the customer profile
+// Get the customer profile
 exports.getProfile = async (req, res) => {
   try {
     const customer = await Customers.findByPk(req.user.id, {
@@ -18,7 +17,7 @@ exports.getProfile = async (req, res) => {
   }
 };
 
-// Controller to get customer bookings
+// Get customer bookings (Potential double with bookingCustomerController getAllBookings)
 exports.getBookings = async (req, res) => {
   try {
     const bookings = await Bookings.findAll({
@@ -35,7 +34,7 @@ exports.getBookings = async (req, res) => {
   }
 };
 
-// Controller to create a new customer (Signup)
+// Create a new customer (Signup)
 exports.signup = async (req, res) => {
   const { first_name, last_name, gender, email, phone, password } = req.body;
 
@@ -50,7 +49,7 @@ exports.signup = async (req, res) => {
   }
 };
 
-// Controller to update customer profile
+// Update customer profile
 exports.updateProfile = async (req, res) => {
   try {
     const customer = await Customers.findByPk(req.user.id);
@@ -73,7 +72,7 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
-// Controller to delete customer account
+// Delete customer account
 exports.deleteAccount = async (req, res) => {
   try {
     const customer = await Customers.findByPk(req.user.id);

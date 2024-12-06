@@ -3,7 +3,7 @@ const { WorkingHours } = require('../models');
 // Add new working hours for a pro
 exports.addWorkingHours = async (req, res) => {
   const { day_of_week, start_time, end_time } = req.body;
-  const pro_id = req.user.userId; // Extract the pro ID from the authenticated user
+  const pro_id = req.user.id; // Extract the pro_id from the authenticated user
 
   try {
     // Create new working hours entry in the database

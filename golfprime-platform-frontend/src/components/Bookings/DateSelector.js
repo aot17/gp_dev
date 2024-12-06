@@ -5,11 +5,10 @@ import 'react-datepicker/dist/react-datepicker.css';
 function DateSelector({ selectedDate, onDateChange }) {
   return (
     <div>
-      <label>Select Date and Time:</label>
+      <label>Select Date:</label>
       <DatePicker
         selected={selectedDate}
         onChange={onDateChange}
-        showTimeSelect
         dateFormat="Pp"
       />
     </div>

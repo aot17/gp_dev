@@ -3,64 +3,59 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import DateSelector from '../components/Bookings/DateSelector';
 import AvailableSlots from '../components/Bookings/AvailableSlots';
-import processAvailability from '../components/Bookings/processAvailability'; // Import the function
 
 function BookingPage() {
-  const { proId } = useParams();
-  const [date, setDate] = useState(new Date());
-  const [availableSlots, setAvailableSlots] = useState([]);
-  const [message, setMessage] = useState('');
-  const [selectedSlot, setSelectedSlot] = useState(null);
-
-  console.log("Selected Slot:", selectedSlot); // Add this for debugging
+  const { proId } = useParams(); // Extract the pro's ID from the URL params
+  const [date, setDate] = useState(new Date()); // Currently selected date
+  const [availableSlots, setAvailableSlots] = useState([]); // Slots fetched from the backend
+  const [message, setMessage] = useState(''); // User feedback messages
+  const [selectedSlot, setSelectedSlot] = useState(null); // The user's selected slot
 
   useEffect(() => {
-    axios.get(`/availability/${proId}`)
-      .then(response => {
-        const { workingHours, unavailabilities } = response.data;
-
-        // Process the data to generate available slots
-        const slots = processAvailability(workingHours, unavailabilities, date);
-        setAvailableSlots(slots);
-        console.log('Available slots:', slots); // Debug: Check slots
+    // Fetch availability for the selected date and pro
+    axios
+      .get(`http://localhost:3000/availability/${proId}`, {
+        params: { date: date.toISOString() }, // Pass the selected date as a query parameter
+        withCredentials: true, // Ensure cookies are sent for authentication
       })
-      .catch(error => {
+      .then((response) => {
+        setAvailableSlots(response.data.availability); // Update available slots with the response data
+        console.log('Available slots:', response.data.availability); // Debug: log slots
+      })
+      .catch((error) => {
         console.error('Error fetching availability:', error);
+        setMessage('Failed to fetch available slots.');
       });
-  }, [proId, date]);
+  }, [proId, date]); // Re-fetch availability when `proId` or `date` changes
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    console.log("Selected Slot in handleSubmit:", selectedSlot); // Debug log    
+
+    // Ensure a slot is selected before proceeding
     if (!selectedSlot) {
       setMessage('Please select a time slot.');
       return;
     }
-    console.log('Selected Slot:', selectedSlot)
-
-    const token = localStorage.getItem('customerToken');
 
     try {
-      const response = await axios.post(
-        'http://localhost:3000/booking',
+      // Submit the booking to the backend
+      await axios.post(
+        'http://localhost:3000/customer/bookings',
         {
           pro_id: proId,
           Date_start: selectedSlot.Date_start,
           Date_end: selectedSlot.Date_end,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
+        { withCredentials: true } // Include cookies for session-based auth
       );
 
       setMessage('Booking successful!');
-      console.log(response.data);
     } catch (error) {
-      console.error('Booking error:', error.response); // Log the entire error response
-      setMessage('Booking failed: ' + (error.response?.data?.message || 'Unknown error'));
+      console.error('Error creating booking:', error);
+      setMessage(
+        'Booking failed: ' +
+          (error.response?.data?.message || 'Unknown error. Please try again.')
+      );
     }
   };
 
@@ -68,10 +63,17 @@ function BookingPage() {
     <div>
       <h2>Book a session with Pro {proId}</h2>
       <form onSubmit={handleSubmit}>
+        {/* Date Selector */}
         <DateSelector selectedDate={date} onDateChange={setDate} />
+
+        {/* Available Slots Selector */}
         <AvailableSlots slots={availableSlots} onSelectSlot={setSelectedSlot} />
+
+        {/* Booking Confirmation Button */}
         <button type="submit">Book Now</button>
       </form>
+
+      {/* Display feedback messages */}
       <p>{message}</p>
     </div>
   );

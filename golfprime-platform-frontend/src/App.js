@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import NavigationBar from './components/NavigationBar';
-import Footer from './components/Footer';
+import CustomerNavigationBar from './components/Navigation/CustomerNavigationBar';
+import Footer from './components/Navigation/Footer';
 import LandingPage from './pages/LandingPage';
 import CustomerLogin from './components/Auth/CustomerLogin';
 import CustomerSignup from './components/Auth/CustomerSignup';
@@ -12,7 +12,7 @@ import BookingPage from './pages/BookingPage';
 function App() {
   return (
     <Router>
-      <NavigationBar />
+      <CustomerNavigationBar />
       <main>
         <Routes>
           <Route path="/" element={<LandingPage />} />

@@ -20,7 +20,7 @@ exports.getAvailability = async (req, res) => {
     }
 
     // Process the availability using the service function.
-    // Pass the professional ID and the selected date to the service.
+    // Pass the pro_id and the selected date to the service.
 
     const availability = await processAvailability(pro_id, selectedDate);
     // Send the processed availability data back to the client in JSON format.

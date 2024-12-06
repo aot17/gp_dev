@@ -1,5 +1,4 @@
-// Import Passport for authentication handling.
-const passport = require('passport');
+const passport = require('passport'); // Import Passport for authentication handling.
 
 /**
  * Controller function for handling Pro login.
@@ -39,7 +38,14 @@ exports.customerLogin = (req, res, next) => {
  */
 exports.logout = (req, res) => {
   req.logout((err) => {
-    if (err) return res.status(500).json({ message: 'Failed to log out' });
-    res.json({ message: 'Logged out successfully' });
+    if (err) {
+      console.error('Logout error:', err);
+      return res.status(500).json({ message: 'Failed to log out' });
+    }
+    // Destroy the session and clear cookies
+    req.session.destroy(() => {
+      res.clearCookie('connect.sid'); // Clear the session cookie
+      res.json({ message: 'Logged out successfully' });
+    });
   });
 };
