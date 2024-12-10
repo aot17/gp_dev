@@ -1,4 +1,4 @@
-const { Bookings, ProsCustomers } = require('../models');
+const { Bookings, ProsCustomers, Customers } = require('../models');
 const { processAvailability } = require('../services/availabilityService');
 const { validateBookingDates } = require('../services/dateValidationService');
 
@@ -149,3 +149,72 @@ exports.deleteBooking = async (req, res) => {
     res.status(500).json({ message: 'Failed to delete booking.', error: error.message });
   }
 };
+
+// Get all bookings for a pro
+exports.getAllBookings = async (req, res) => {
+  try {
+    console.log('Fetching bookings for pro ID:', req.user.id);
+
+    const ProId = req.user.id; // Get the logged-in pro ID
+    const bookings = await Bookings.findAll({
+      where: { pro_id: ProId }, // Filter by pro ID
+      include: [
+        {
+          model: Customers,
+          attributes: ['first_name', 'last_name'], // Only include relevant customer info
+        },
+      ],
+    });
+
+    console.log('Raw bookings fetched from database:', JSON.stringify(bookings, null, 2));
+
+    // Transform the data to include client_name
+    const transformedBookings = bookings.map((booking) => {
+      const clientName = booking.Customer
+        ? `${booking.Customer.first_name} ${booking.Customer.last_name}`
+        : 'Unknown';
+      console.log(`Transforming booking ID: ${booking.booking_id}, Client Name: ${clientName}`);
+      
+      return {
+        id: booking.booking_id,
+        title: `Client: ${clientName}`,
+        start: booking.Date_start,
+        end: booking.Date_end,
+      };
+    });
+
+    console.log('Transformed bookings to send to frontend:', JSON.stringify(transformedBookings, null, 2));
+
+    res.json(transformedBookings);
+  } catch (error) {
+    console.error('Error fetching bookings:', error);
+    res.status(500).json({ message: 'Failed to retrieve bookings.', error });
+  }
+};
+
+exports.getBookingById = async (req, res) => {
+  try {
+    const ProId = req.user.id; // Get the pro_id of the logged-in pro
+    const booking = await Bookings.findOne({
+      where: { booking_id: req.params.id }, // Fetch the booking by ID
+    });
+
+    // Check if booking exists
+    if (!booking) {
+      return res.status(404).json({ error: 'Booking not found.' });
+    }
+
+    // Check if the booking belongs to the logged-in customer
+    if (booking.pro_id !== ProId) {
+      return res.status(403).json({ error: 'You do not have permission to view this booking.' });
+    }
+
+    // If everything checks out, return the booking
+    res.json(booking);
+
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve booking.' });
+  }
+};
+
+

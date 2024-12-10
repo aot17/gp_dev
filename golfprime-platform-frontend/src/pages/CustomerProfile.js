@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import './CustomerProfile.css';
 import axios from 'axios';
+import CustomerBookings from '../components/Profile/CustomerBookings';
+import CustomerPersonalInfo from '../components/Profile/CustomerPersonalInfo';
 import { useNavigate } from 'react-router-dom';
 
 function CustomerProfile() {
-  const [bookings, setBookings] = useState([]);
-  const [customerInfo, setCustomerInfo] = useState({});
+  const [activeSection, setActiveSection] = useState('reservations');
+  const [customerInfo, setCustomerInfo] = useState({
+    firstName: '',
+    lastName: '',
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -12,54 +18,47 @@ function CustomerProfile() {
     axios
       .get('http://localhost:3000/customer/profile', { withCredentials: true })
       .then((response) => {
-        setCustomerInfo(response.data);
+        setCustomerInfo({
+          firstName: response.data.first_name,
+          lastName: response.data.last_name,
+          email: response.data.email,
+        });
       })
       .catch((error) => {
         console.error('Error fetching customer info:', error);
         if (error.response?.status === 401) {
-          navigate('/customer-login'); // Redirect if not authenticated
+          navigate('/customer-login'); // Redirect to login if not authenticated
         }
-      });
-
-    // Fetch customer bookings
-    axios
-      .get('http://localhost:3000/customer/bookings', { withCredentials: true })
-      .then((response) => {
-        setBookings(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching bookings:', error);
       });
   }, [navigate]);
 
   return (
-    <div>
-      <h1>Welcome, {customerInfo.first_name} {customerInfo.last_name}</h1>
-      <h2>Your Bookings</h2>
-      {bookings.length > 0 ? (
+    <div className="profile-container">
+      <aside className="profile-sidebar">
+        <div className="profile-header">
+          <h2>{customerInfo.firstName && customerInfo.lastName 
+                ? `${customerInfo.firstName} ${customerInfo.lastName}` 
+                : 'Loading...'}</h2>
+        </div>
         <ul>
-          {bookings.map((booking) => (
-            <li key={booking.booking_id}>
-              <div>
-                <p>
-                  <strong>Pro:</strong> {booking.Pro ? `${booking.Pro.first_name} ${booking.Pro.last_name}` : 'N/A'}
-                </p>
-                <p>
-                  <strong>Start:</strong> {new Date(booking.Date_start).toLocaleString()}
-                </p>
-                <p>
-                  <strong>End:</strong> {new Date(booking.Date_end).toLocaleString()}
-                </p>
-                <p>
-                  <strong>Status:</strong> {booking.status}
-                </p>
-              </div>
-            </li>
-          ))}
+          <li
+            className={activeSection === 'reservations' ? 'active' : ''}
+            onClick={() => setActiveSection('reservations')}
+          >
+            Mes Réservations
+          </li>
+          <li
+            className={activeSection === 'personal-info' ? 'active' : ''}
+            onClick={() => setActiveSection('personal-info')}
+          >
+            Mes Données Personnelles
+          </li>
         </ul>
-      ) : (
-        <p>No bookings found.</p>
-      )}
+      </aside>
+      <main className="profile-content">
+        {activeSection === 'reservations' && <CustomerBookings />}
+        {activeSection === 'personal-info' && <CustomerPersonalInfo />}
+      </main>
     </div>
   );
 }

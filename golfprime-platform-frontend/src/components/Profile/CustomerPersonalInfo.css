@@ -1,0 +1,24 @@
+.personal-info-container {
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+  }
+  
+  .personal-info-form div {
+    margin-bottom: 15px;
+  }
+  
+  .personal-info-form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .personal-info-form input,
+  .personal-info-form select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  

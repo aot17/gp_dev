@@ -106,7 +106,6 @@ exports.updateBooking = async (req, res) => {
   }
 };
 
-
 // Delete existing booking
 exports.deleteBooking = async (req, res) => {
   const bookingId = req.params.id; // Extract the booking_id from the request params

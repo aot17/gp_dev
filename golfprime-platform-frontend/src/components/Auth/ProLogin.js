@@ -1,6 +1,6 @@
-// src/components/ProLogin.js
 import React, { useState } from 'react';
 import axios from 'axios';
+//import { useNavigate, Link } from 'react-router-dom';
 
 function ProLogin() {
   const [email, setEmail] = useState('');
@@ -11,25 +11,43 @@ function ProLogin() {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:3000/auth/pro/login', {
-        email,
-        password
-      });
-
-      const token = response.data.token;
-      localStorage.setItem('proToken', token); // Store token for later use
+      // Make the login request
+      await axios.post(
+        'http://localhost:3000/auth/pro/login',
+        { email, password },
+        { withCredentials: true } // Enable cookies for Passport.js sessions
+      );
       setMessage('Login successful!');
+      // Reload the page to reflect the logged-in state
+      //window.location.reload();
+      //navigate('/http://localhost:3000'); // Redirect on success
+      window.location.href = '/'; // Redirects to the landing page dynamically
+
     } catch (error) {
-      setMessage('Login failed: ' + error.response?.data?.message || 'Unknown error');
+      const errorMessage =
+        error.response?.data?.message || 'Login failed due to server error.';
+      setMessage(errorMessage);
     }
   };
 
   return (
-    <div>
+    <div className="login-container">
       <h2>Pro Login</h2>
       <form onSubmit={handleSubmit}>
-        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
         <button type="submit">Login</button>
       </form>
       <p>{message}</p>

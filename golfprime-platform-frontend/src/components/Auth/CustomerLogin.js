@@ -6,7 +6,7 @@ function CustomerLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,7 +20,10 @@ function CustomerLogin() {
       );
 
       setMessage('Login successful!');
-      navigate('/customer-profile'); // Redirect on success
+      // Reload the page to reflect the logged-in state
+      //window.location.reload();
+      //navigate('/http://localhost:3000'); // Redirect on success
+      window.location.href = '/'; // Redirects to the landing page dynamically
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || 'Login failed due to server error.';
