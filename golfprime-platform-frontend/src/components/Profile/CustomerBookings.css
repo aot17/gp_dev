@@ -1,25 +1,75 @@
-.bookings-container {
-    background-color: #f8f9fa;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .bookings-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .booking-item {
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    background-color: #fff;
-  }
-  
-  .booking-item p {
-    margin: 5px 0;
-  }
-  
+/* CustomerBookings.css */
+
+.booking-list {
+  margin-bottom: 20px; /* Add spacing to prevent overlapping the footer */
+}
+
+.booking-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.booking-item span {
+  flex: 1;
+  text-align: left;
+  margin-right: 10px;
+}
+
+.booking-item .booking-info {
+  color: #555;
+}
+
+.booking-item .booking-status {
+  color: #007bff;
+  font-weight: bold;
+}
+
+/* Page Layout */
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+footer {
+  margin-top: auto;
+}
+
+.booking-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.booking-actions button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.booking-actions button:hover {
+  opacity: 0.8;
+}
+
+.booking-actions button:first-child {
+  background-color: #007bff; /* Modify button */
+  color: white;
+}
+
+.booking-actions button:last-child {
+  background-color: #dc3545; /* Cancel button */
+  color: white;
+}

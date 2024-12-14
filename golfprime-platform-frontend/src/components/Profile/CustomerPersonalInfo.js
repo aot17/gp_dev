@@ -1,108 +1,89 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import './CustomerPersonalInfo.css'; // Separate CSS for personal info
+import './CustomerPersonalInfo.css';
 
-function CustomerPersonalInfo() {
-  const [customerInfo, setCustomerInfo] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    phone: '',
-    gender: '',
-  });
-  const [editMode, setEditMode] = useState(false);
+function CustomerPersonalInfo({ customerInfo, onProfileUpdate }) {
+  const [editField, setEditField] = useState(null); // Track which field is being edited
+  const [formData, setFormData] = useState(customerInfo); // Local state for form data
   const [message, setMessage] = useState('');
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    // Fetch customer profile information
-    axios
-      .get('http://localhost:3000/customer/profile', { withCredentials: true })
-      .then((response) => {
-        setCustomerInfo(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching customer info:', error);
-        if (error.response?.status === 401) {
-          navigate('/customer-login'); // Redirect if not authenticated
-        }
-      });
-  }, [navigate]);
-
+  // Handle input changes in the form fields
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setCustomerInfo((prevInfo) => ({ ...prevInfo, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value })); // Update only the specific field
   };
 
-  const handleUpdateProfile = (e) => {
-    e.preventDefault();
+  // Handle saving a single field update
+  const handleSaveField = (field) => {
+    const updatedField = { [field]: formData[field] };
+    setEditField(null);
+  
     axios
-      .put('http://localhost:3000/customer/profile', customerInfo, { withCredentials: true })
-      .then((response) => {
-        setMessage('Profile updated successfully!');
-        setEditMode(false); // Exit edit mode
-        setCustomerInfo(response.data); // Update profile info with the response
+      .put('http://localhost:3000/customer/profile', updatedField, { withCredentials: true })
+      .then(() => {
+        setMessage('Votre profil a été mis à jour avec succès !');
+        onProfileUpdate(); // Trigger parent to re-fetch
       })
       .catch((error) => {
         console.error('Error updating profile:', error);
         setMessage('Failed to update profile.');
       });
   };
-
-  return (
-    <div className="personal-info-container">
-      <h2>Mes Données Personnelles</h2>
-      {editMode ? (
-        <form className="personal-info-form" onSubmit={handleUpdateProfile}>
-          <div>
-            <label>First Name:</label>
-            <input type="text" name="first_name" value={customerInfo.first_name} onChange={handleInputChange} />
-          </div>
-          <div>
-            <label>Last Name:</label>
-            <input type="text" name="last_name" value={customerInfo.last_name} onChange={handleInputChange} />
-          </div>
-          <div>
-            <label>Email:</label>
-            <input type="email" name="email" value={customerInfo.email} onChange={handleInputChange} />
-          </div>
-          <div>
-            <label>Phone:</label>
-            <input type="text" name="phone" value={customerInfo.phone} onChange={handleInputChange} />
-          </div>
-          <div>
-            <label>Gender:</label>
-            <select name="gender" value={customerInfo.gender} onChange={handleInputChange}>
+  
+  const renderField = (label, fieldName, value) => (
+    <div className="profile-field">
+      <span className="field-label">{label}:</span>
+      {editField === fieldName ? (
+        <>
+          {fieldName === 'gender' ? (
+            <select
+              name={fieldName}
+              value={formData[fieldName] || ''}
+              onChange={handleInputChange}
+            >
+              <option value="">Select</option>
               <option value="male">Male</option>
               <option value="female">Female</option>
               <option value="other">Other</option>
             </select>
-          </div>
-          <button type="submit">Save</button>
-          <button type="button" onClick={() => setEditMode(false)}>Cancel</button>
-        </form>
+          ) : (
+            <input
+              type="text"
+              name={fieldName}
+              value={formData[fieldName] || ''}
+              onChange={handleInputChange}
+            />
+          )}
+          <button className="save-button" onClick={() => handleSaveField(fieldName)}>
+            Save
+          </button>
+          <button className="cancel-button" onClick={() => setEditField(null)}>
+            Cancel
+          </button>
+        </>
       ) : (
-        <div>
-          <p>
-            <strong>Name:</strong> {customerInfo.first_name} {customerInfo.last_name}
-          </p>
-          <p>
-            <strong>Email:</strong> {customerInfo.email}
-          </p>
-          <p>
-            <strong>Phone:</strong> {customerInfo.phone || 'N/A'}
-          </p>
-          <p>
-            <strong>Gender:</strong> {customerInfo.gender || 'N/A'}
-          </p>
-          <button onClick={() => setEditMode(true)}>Edit Profile</button>
-        </div>
+        <>
+          <span className="field-value">{value || 'N/A'}</span>
+          <button className="edit-button" onClick={() => setEditField(fieldName)}>
+            Modifier
+          </button>
+        </>
       )}
-      {message && <p>{message}</p>}
+    </div>
+  );  
+
+  return (
+    <div className="personal-info-container">
+      <h2>Mes données personnelles</h2>
+      {renderField('Prénom', 'first_name', formData.firstName)}
+      {renderField('Nom', 'last_name', formData.lastName)}
+      {renderField('Email', 'email', formData.email)}
+      {renderField('Numéro de téléphone', 'phone', formData.phone)}
+      {renderField('Genre', 'gender', formData.gender)}
+
+      {message && <p className="status-message">{message}</p>}
     </div>
   );
 }
-
 
 export default CustomerPersonalInfo;

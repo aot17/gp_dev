@@ -1,6 +1,7 @@
-const { Bookings } = require('../models');
+const { Bookings, Pros } = require('../models');
 const { processAvailability } = require('../services/availabilityService');
 const { validateBookingDates } = require('../services/dateValidationService');
+const { Op } = require('sequelize'); // Import Sequelize operators
 
 // Create a new booking
 exports.createBooking = async (req, res) => {
@@ -135,12 +136,41 @@ exports.deleteBooking = async (req, res) => {
 
 exports.getAllBookings = async (req, res) => {
   try {
-    const customerId = req.user.id; // Get the customer_id of the logged-in customer
+    const customerId = req.user.id; // Get the logged-in customer ID
+    //console.log('Fetching bookings for customer ID:', customerId);
+
+    // Fetch all bookings for the customer
     const bookings = await Bookings.findAll({
-      where: { customer_id: customerId }, // Restrict to the logged-in customer
+      where: { customer_id: customerId },
+      include: [
+        {
+          model: Pros,
+          attributes: ['first_name', 'last_name'],
+        },
+      ],
+      order: [['Date_start', 'ASC']], // Sort by start date ascending
     });
-    res.json(bookings);
+    //console.log('Raw bookings fetched from database:', JSON.stringify(bookings, null, 2));
+
+    const now = new Date(); // Current date and time
+
+    // Separate bookings into upcoming and past
+    const upcomingBookings = bookings.filter(
+      (booking) => new Date(booking.Date_start) >= now
+    );
+    //console.log('Upcoming bookings:', JSON.stringify(upcomingBookings, null, 2));
+    const pastBookings = bookings.filter(
+      (booking) => new Date(booking.Date_start) < now
+    );
+    //console.log('Past bookings:', JSON.stringify(pastBookings, null, 2));
+
+    res.json({
+      upcoming: upcomingBookings,
+      past: pastBookings,
+    });
+
   } catch (error) {
+    console.error('Error fetching bookings:', error);
     res.status(500).json({ error: 'Failed to retrieve bookings.' });
   }
 };
@@ -150,7 +180,8 @@ exports.getBookingById = async (req, res) => {
     const customerId = req.user.id; // Get the customer_id of the logged-in customer
     const booking = await Bookings.findOne({
       where: { booking_id: req.params.id }, // Fetch the booking by ID
-    });
+      include: [{ model: Pros, attributes: ['first_name', 'last_name'] }],
+        });
 
     // Check if booking exists
     if (!booking) {

@@ -21,7 +21,7 @@ function ProLogin() {
       // Reload the page to reflect the logged-in state
       //window.location.reload();
       //navigate('/http://localhost:3000'); // Redirect on success
-      window.location.href = '/'; // Redirects to the landing page dynamically
+      window.location.href = '/pro-back-office'; // Redirects to the landing page dynamically
 
     } catch (error) {
       const errorMessage =

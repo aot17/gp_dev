@@ -4,33 +4,19 @@ const { Customers, Bookings, Pros, Golfs, Authentication } = require('../models'
 // Get the customer profile
 exports.getProfile = async (req, res) => {
   try {
-    const customer = await Customers.findByPk(req.user.id, {
+    const customerId = req.user.id;
+    console.log('Fetching profile for customer ID:', customerId);
+    
+    const customer = await Customers.findOne({
+      where: { customer_id: customerId },
       attributes: ['first_name', 'last_name', 'email', 'phone', 'gender'],
     });
-    if (!customer) {
-      return res.status(404).json({ message: 'Customer not found' });
-    }
+
+    console.log('Fetched customer data:', customer.toJSON()); // Log data for debugging
     res.json(customer);
   } catch (error) {
-    console.error('Error retrieving customer profile:', error);
-    res.status(500).json({ message: 'Failed to retrieve customer profile' });
-  }
-};
-
-// Get customer bookings (Potential double with bookingCustomerController getAllBookings)
-exports.getBookings = async (req, res) => {
-  try {
-    const bookings = await Bookings.findAll({
-      where: { customer_id: req.user.id },
-      include: [
-        { model: Pros, attributes: ['first_name', 'last_name'] },
-        { model: Golfs, attributes: ['name', 'address'] }
-      ]
-    });
-    res.json(bookings);
-  } catch (error) {
-    console.error('Error retrieving bookings:', error);
-    res.status(500).json({ message: 'Failed to retrieve bookings' });
+    console.error('Error fetching customer profile:', error);
+    res.status(500).json({ error: 'Failed to fetch customer profile.' });
   }
 };
 

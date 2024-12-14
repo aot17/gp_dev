@@ -37,17 +37,27 @@ exports.customerLogin = (req, res, next) => {
 
 // Check if a customer is logged in
 exports.checkSession = (req, res) => {
-  console.log('Checking session...');
-  console.log('Request session ID:', req.sessionID);
-  console.log('Session object:', req.session);
-  console.log('Authenticated user from req.user:', req.user);
-  console.log('Is authenticated:', req.isAuthenticated());
-  
-  if (req.isAuthenticated() && req.user.role === 'customer') {
-    console.log('User is authenticated and a customer:', req.user);    
-    res.json({ loggedIn: true, user: req.user }); // Provide user details if needed
-    console.log('User is not authenticated or not a customer.');  
+  //console.log('Checking session...');
+  //console.log('Request session ID:', req.sessionID);
+  //console.log('Session object:', req.session);
+  //console.log('Authenticated user from req.user:', req.user);
+  //console.log('Is authenticated:', req.isAuthenticated());
+
+  if (req.isAuthenticated()) {
+    const userRole = req.user.role; // Get the user's role (either 'customer' or 'pro')
+
+    if (userRole === 'customer') {
+      //console.log('User is authenticated and a customer:', req.user);
+      res.json({ loggedIn: true, user: req.user }); // Include user details
+    } else if (userRole === 'pro') {
+      //console.log('User is authenticated and a pro:', req.user);
+      res.json({ loggedIn: true, user: req.user });
+    } else {
+      //console.log('User is authenticated but role is unrecognized:', req.user);
+      res.json({ loggedIn: false, message: 'Invalid user role.' });
+    }
   } else {
+    //console.log('User is not authenticated.');
     res.json({ loggedIn: false });
   }
 };

@@ -92,7 +92,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser((user, done) => {
   // Retrieve the user object from the session.
-  console.log('Deserializing user:', user);
+  //console.log('Deserializing user:', user);
   done(null, user); // Re-attach `user` to the request after retrieval from session storage.
 });
 
