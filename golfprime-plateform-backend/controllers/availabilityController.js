@@ -31,3 +31,29 @@ exports.getAvailability = async (req, res) => {
     res.status(500).json({ message: 'Error processing availability', error });
   }
 };
+
+// Controller function for pro-specific availability
+exports.getProAvailability = async (req, res) => {
+  const proId = req.user.id; // Use logged-in pro ID from session
+  const { date } = req.query; // Extract the date from query parameters
+
+  if (!date) {
+    return res.status(400).json({ message: 'Date is required' });
+  }
+
+  try {
+    // Validate and parse the date
+    const selectedDate = new Date(date);
+    if (isNaN(selectedDate)) {
+      return res.status(400).json({ message: 'Invalid date format' });
+    }
+
+    // Process availability for the logged-in pro
+    const availability = await processAvailability(proId, selectedDate);
+    res.json({ availability });
+  } catch (error) {
+    console.error('Error fetching pro availability:', error);
+    res.status(500).json({ message: 'Failed to fetch availability.' });
+  }
+};
+

@@ -111,9 +111,9 @@ const availabilityRoutes = require('./routes/availabilityRoutes');
 // Register the routes with specific base paths
 app.use('/golf', golfRoutes);
 app.use('/customer', customerRoutes);
+app.use('/pro/bookings', bookingProRoutes);    
 app.use('/pro', proRoutes);
 app.use('/customer/bookings', bookingCustomerRoutes); // Routes for customers
-app.use('/pro/bookings', bookingProRoutes);    
 app.use('/course', courseRoutes);
 app.use('/auth', authRoutes); // Authentication routes for login, logout, etc.
 app.use('/unavailabilities', unavailabilitiesRoutes);

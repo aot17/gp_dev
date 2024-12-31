@@ -6,9 +6,9 @@ import LandingPage from './pages/LandingPage';
 import CustomerLogin from './components/Auth/CustomerLogin';
 import CustomerSignup from './components/Auth/CustomerSignup';
 import ProLogin from './components/Auth/ProLogin';
-import CustomerProfile from './pages/CustomerProfile';
-import ProBackOffice from './pages/ProBackOffice';
-import BookingPage from './pages/BookingPage';
+import CustomerProfilePage from './pages/CustomerProfilePage';
+import ProBackOfficePage from './pages/ProBackOfficePage';
+import CreateBookingPage from './pages/CreateBookingPage';
 import UpdateBookingPage from './pages/UpdateBookingPage';
 
 
@@ -22,10 +22,10 @@ function App() {
           <Route path="/customer-login" element={<CustomerLogin />} />
           <Route path="/customer-signup" element={<CustomerSignup />} />
           <Route path="/pro-login" element={<ProLogin />} />
-          <Route path="/customer-profile" element={<CustomerProfile />} />
+          <Route path="/customer-profile" element={<CustomerProfilePage />} />
           <Route path="/update-booking/:bookingId" element={<UpdateBookingPage />} />
-          <Route path="/booking/:proId" element={<BookingPage />} />
-          <Route path="/pro-back-office" element={<ProBackOffice />} />
+          <Route path="/booking/:proId" element={<CreateBookingPage />} />
+          <Route path="/pro-back-office" element={<ProBackOfficePage />} />
         </Routes>
       </main>
       <Footer />

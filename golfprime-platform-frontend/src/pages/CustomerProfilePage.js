@@ -3,9 +3,9 @@ import axios from 'axios';
 import CustomerBookings from '../components/Profile/CustomerBookings';
 import CustomerPersonalInfo from '../components/Profile/CustomerPersonalInfo';
 import { useNavigate } from 'react-router-dom';
-import './CustomerProfile.css';
+import './CustomerProfilePage.css';
 
-function CustomerProfile() {
+function CustomerProfilePage() {
   // State to track which section (reservations or personal info) is active
   const [activeSection, setActiveSection] = useState('reservations');
   const [customerInfo, setCustomerInfo] = useState({
@@ -100,4 +100,4 @@ function CustomerProfile() {
   );
 }
 
-export default CustomerProfile;
+export default CustomerProfilePage;

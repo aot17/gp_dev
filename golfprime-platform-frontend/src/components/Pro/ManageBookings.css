@@ -1,0 +1,50 @@
+.manage-bookings {
+    font-family: Arial, sans-serif;
+  }
+  
+  .modal {
+    position: fixed; /* Ensure it floats above everything */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* High value to appear on top */
+    border-radius: 8px;
+  }
+  
+  .modal-content label {
+    display: block; /* Each label starts on a new line */
+    margin-top: 10px; /* Add spacing above labels */
+    font-weight: bold; /* Make labels bold */
+  }
+  
+  .modal-content select {
+    width: 100%; /* Make dropdowns full width */
+    padding: 8px; /* Add padding for better appearance */
+    margin-top: 5px; /* Spacing between label and dropdown */
+  }
+  
+  .modal-actions {
+    margin-top: 20px; /* Space above action buttons */
+    display: flex;
+    justify-content: space-between; /* Spread buttons apart */
+  }
+  
+  .modal-actions button {
+    padding: 10px 20px; /* Padding for buttons */
+    cursor: pointer; /* Pointer cursor on hover */
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6); /* Dim background */
+    z-index: 999; /* Behind modal but above everything else */
+  }
+  
+  

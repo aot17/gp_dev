@@ -4,23 +4,20 @@ const { validateBookingDates } = require('../services/dateValidationService');
 
 // Pro creates a booking
 exports.createBooking = async (req, res) => {
-  const { pro_id, customer_id, Date_start, Date_end } = req.body; // Extract booking details from the request body
-  const requesterId = req.user.id; // Extract pro_id from the authenticated user session
+  const { customer_id, Date_start, Date_end } = req.body; // Extract booking details from the request body
+  const pro_id = req.user.id; // Extract pro_id from the authenticated user session
+
+  console.log('Received Booking Request:', { pro_id, customer_id, Date_start, Date_end }); // Debugging
 
   try {
 
     // Validate dates
     const { start, end } = validateBookingDates(Date_start, Date_end);
 
-    // Validate that the pro is authorized to create bookings for themselves
-    if (requesterId !== pro_id) {
-      return res.status(403).json({ message: 'Pro can only create bookings on their own calendar.' });
-    }
-
     // Check if the pro has a prior relationship with the client
     // Ensure that the pros can only create a booking with a client they’ve previously worked with
     const existingRelationship = await ProsCustomers.findOne({
-      where: { pro_id: requesterId, customer_id }, // Check for an existing entry in ProsCustomers
+      where: { pro_id, customer_id }, // Check for an existing entry in ProsCustomers
     });
 
     if (!existingRelationship) {
@@ -166,14 +163,14 @@ exports.getAllBookings = async (req, res) => {
       ],
     });
 
-    console.log('Raw bookings fetched from database:', JSON.stringify(bookings, null, 2));
+    //console.log('Raw bookings fetched from database:', JSON.stringify(bookings, null, 2));
 
     // Transform the data to include client_name
     const transformedBookings = bookings.map((booking) => {
       const clientName = booking.Customer
         ? `${booking.Customer.first_name} ${booking.Customer.last_name}`
         : 'Unknown';
-      console.log(`Transforming booking ID: ${booking.booking_id}, Client Name: ${clientName}`);
+      //console.log(`Transforming booking ID: ${booking.booking_id}, Client Name: ${clientName}`);
       
       return {
         id: booking.booking_id,
@@ -183,7 +180,7 @@ exports.getAllBookings = async (req, res) => {
       };
     });
 
-    console.log('Transformed bookings to send to frontend:', JSON.stringify(transformedBookings, null, 2));
+    //console.log('Transformed bookings to send to frontend:', JSON.stringify(transformedBookings, null, 2));
 
     res.json(transformedBookings);
   } catch (error) {

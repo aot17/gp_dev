@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './ProBackOffice.css';
 import ManageBookings from './ManageBookings';
-import ViewClients from './ViewClients';
+import ViewCustomers from './ViewCustomers';
 
 function ProBackOffice() {
   const [activeSection, setActiveSection] = useState('bookings');
@@ -18,16 +18,16 @@ function ProBackOffice() {
             Manage Bookings
           </li>
           <li
-            className={activeSection === 'clients' ? 'active' : ''}
-            onClick={() => setActiveSection('clients')}
+            className={activeSection === 'customers' ? 'active' : ''}
+            onClick={() => setActiveSection('customers')}
           >
-            View Clients
+            View Customers
           </li>
         </ul>
       </aside>
       <main className="pro-main-content">
         {activeSection === 'bookings' && <ManageBookings />}
-        {activeSection === 'clients' && <ViewClients />}
+        {activeSection === 'customers' && <ViewCustomers />}
       </main>
     </div>
   );

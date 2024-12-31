@@ -1,66 +1,54 @@
-.update-booking-container {
-    max-width: 600px;
-    margin: 30px auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    font-family: Arial, sans-serif;
-  }
-  
-  .booking-header h2 {
-    font-size: 1.8rem;
-    margin-bottom: 10px;
-    color: #333;
-  }
-  
-  .booking-header .booking-details {
-    font-size: 1rem;
-    color: #555;
-  }
-  
-  .update-booking-form {
-    margin-top: 20px;
-  }
-  
-  .form-section {
-    margin-bottom: 20px;
-  }
-  
-  .form-section h3 {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-    color: #444;
-  }
-  
-  .submit-button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    font-size: 1rem;
-    color: #fff;
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: center;
-  }
-  
-  .submit-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .loading-message {
-    font-size: 1.2rem;
-    color: #666;
-    text-align: center;
-  }
-  
-  .feedback-message {
-    margin-top: 20px;
-    font-size: 1rem;
-    color: green;
-    text-align: center;
-  }
-  
+.booking-page-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.booking-form {
+  margin-top: 20px;
+}
+
+.calendar-and-slots {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.calendar-section, .slots-section {
+  flex: 1;
+}
+
+.action-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.booking-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.booking-button:hover {
+  background-color: #0056b3;
+}
+
+.booking-details {
+  font-size: 1rem;
+  color: #555;
+}
+
+.message {
+  margin-top: 10px;
+  font-size: 1rem;
+  color: green;
+  text-align: center;
+}

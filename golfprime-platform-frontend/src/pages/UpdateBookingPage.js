@@ -3,47 +3,38 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import DateSelector from '../components/Bookings/DateSelector';
 import AvailableSlots from '../components/Bookings/AvailableSlots';
-import './UpdateBookingPage.css'; // CSS for styling
+import './UpdateBookingPage.css'; // Updated CSS
 
 function UpdateBookingPage() {
   const { bookingId } = useParams(); // Extract the booking ID from the URL params
   const [booking, setBooking] = useState(null); // State to hold booking details
   const [date, setDate] = useState(new Date()); // Currently selected date
-  const [availableSlots, setAvailableSlots] = useState([]); // Slots fetched from the backend
   const [selectedSlot, setSelectedSlot] = useState(null); // The user's selected slot
   const [message, setMessage] = useState(''); // User feedback messages
+  const [proDetails, setProDetails] = useState(null); // State to store pro's details
 
+  // Fetch booking details on mount
   useEffect(() => {
-    // Fetch booking details
-    axios
-      .get(`http://localhost:3000/customer/bookings/${bookingId}`, { withCredentials: true })
-      .then((response) => {
-        setBooking(response.data); // Save booking details
+    const fetchBookingDetails = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/customer/bookings/${bookingId}`, {
+          withCredentials: true,
+        });
+        setBooking(response.data);
         setDate(new Date(response.data.Date_start)); // Initialize date selector
-      })
-      .catch((error) => {
+        // Fetch pro details
+        const proResponse = await axios.get(`http://localhost:3000/pro/${response.data.pro_id}`, {
+          withCredentials: true,
+        });
+        setProDetails(proResponse.data);
+      } catch (error) {
         console.error('Error fetching booking details:', error);
         setMessage('Failed to load booking details.');
-      });
-  }, [bookingId]);
+      }
+    };
 
-  useEffect(() => {
-    if (booking) {
-      // Fetch availability for the selected date and pro associated with the booking
-      axios
-        .get(`http://localhost:3000/availability/${booking.pro_id}`, {
-          params: { date: date.toISOString() }, // Pass the selected date as a query parameter
-          withCredentials: true,
-        })
-        .then((response) => {
-          setAvailableSlots(response.data.availability); // Update available slots with the response data
-        })
-        .catch((error) => {
-          console.error('Error fetching availability:', error);
-          setMessage('Failed to fetch available slots.');
-        });
-    }
-  }, [booking, date]);
+    fetchBookingDetails();
+  }, [bookingId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -72,41 +63,42 @@ function UpdateBookingPage() {
   };
 
   return (
-    <div className="update-booking-container">
-      <div className="booking-header">
-        {booking && (
-          <h2>
-            Update Booking with {booking.Pro ? `${booking.Pro.first_name} ${booking.Pro.last_name}` : 'N/A'}
-          </h2>
-        )}
-        {booking && (
-          <p className="booking-details">
-            Current booking: {new Date(booking.Date_start).toLocaleString('fr-FR')} to {new Date(booking.Date_end).toLocaleString('fr-FR')}
-          </p>
-        )}
-      </div>
-
-      <form className="update-booking-form" onSubmit={handleSubmit}>
-        {booking ? (
-          <>
-            <div className="form-section">
-              <DateSelector selectedDate={date} onDateChange={setDate} />
-            </div>
-
-            <div className="form-section">
-              <AvailableSlots slots={availableSlots} onSelectSlot={setSelectedSlot} />
-            </div>
-
-            <button className="submit-button" type="submit">
-              Update Booking
-            </button>
-          </>
-        ) : (
-          <p className="loading-message">Loading booking details...</p>
-        )}
+    <div className="booking-page-container">
+      <h2>
+        Update Booking with{' '}
+        {proDetails
+          ? `${proDetails.first_name} ${proDetails.last_name}`
+          : 'Loading...'}
+      </h2>
+      {booking && (
+        <p className="booking-details">
+          Current booking: {new Date(booking.Date_start).toLocaleString('fr-FR')} to{' '}
+          {new Date(booking.Date_end).toLocaleString('fr-FR')}
+        </p>
+      )}
+      <form className="booking-form" onSubmit={handleSubmit}>
+        <div className="calendar-and-slots">
+          <div className="calendar-section">
+            <DateSelector selectedDate={date} onDateChange={setDate} />
+          </div>
+          <div className="slots-section">
+            <AvailableSlots
+              proId={booking?.pro_id}
+              date={date}
+              selectedSlot={selectedSlot}
+              onSelectSlot={setSelectedSlot}
+            />
+          </div>
+        </div>
+        <div className="action-section">
+          <button type="submit" className="booking-button">
+            Update Booking
+          </button>
+        </div>
       </form>
 
-      {message && <p className="feedback-message">{message}</p>}
+      {/* Feedback messages */}
+      <p className="message">{message}</p>
     </div>
   );
 }

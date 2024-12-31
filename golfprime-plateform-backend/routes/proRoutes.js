@@ -7,6 +7,12 @@ const proController = require('../controllers/proController');
 // GET all pros (public access)
 router.get('/', proController.getAllPros);
 
+// GET customers linked to the authenticated pro
+router.get('/customers', authMiddleware(['pro']), proController.getProCustomers);
+
+// GET pro by id (public access)
+router.get('/:id', proController.getProById);
+
 // POST a new pro (admin only)
 router.post('/', authMiddleware(['admin']), proController.createPro);
 
