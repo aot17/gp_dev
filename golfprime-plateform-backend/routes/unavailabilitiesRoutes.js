@@ -8,6 +8,9 @@ const unavailabilitiesController = require('../controllers/unavailabilitiesContr
 router.post('/', authMiddleware(['pro']), unavailabilitiesController.addUnavailability);
 
 // Route to get all unavailabilities for a specific pro
+router.get('/probackoffice', authMiddleware(['pro']), unavailabilitiesController.getProBackOfficeUnavailabilities);
+
+// Route to get all unavailabilities for a specific pro
 router.get('/:pro_id', unavailabilitiesController.getProUnavailabilities);
 
 module.exports = router;

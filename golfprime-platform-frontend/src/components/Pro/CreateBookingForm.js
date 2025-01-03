@@ -1,33 +1,34 @@
 import React, { useState } from 'react';
 
-const BookingForm = ({
+const CreateBookingForm = ({
   selectedDate,
   preSelectedSlot,
   availableSlots,
   customers,
-  handleSaveBooking,
+  handleCreateBooking,
   setModalVisible,
 }) => {
   const [selectedCustomer, setSelectedCustomer] = useState('');
   const [selectedSlot, setSelectedSlot] = useState(preSelectedSlot || '');
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Format selected date with day name (e.g., Monday 01/02/2025)
+  // Format the selected date
   const formattedDate = selectedDate.toLocaleDateString('en-US', {
-    weekday: 'long', // Display full day name (Monday, Tuesday, etc.)
+    weekday: 'long',
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
   });
 
+  // Handle Create
   const handleSave = () => {
     if (!selectedCustomer || !selectedSlot) {
       setErrorMessage('Please select a customer and time slot.');
       return;
     }
 
-    // Save booking
-    handleSaveBooking({
+    // Create Booking
+    handleCreateBooking({
       customer_id: parseInt(selectedCustomer),
       Date_start: selectedSlot.Date_start,
       Date_end: selectedSlot.Date_end,
@@ -44,7 +45,7 @@ const BookingForm = ({
         <strong>Selected Date:</strong> {formattedDate}
       </p>
 
-      {/* Time Slot selection */}
+      {/* Select Time Slot */}
       <label>Select Time Slot:</label>
       <select
         value={JSON.stringify(selectedSlot)}
@@ -59,7 +60,7 @@ const BookingForm = ({
         ))}
       </select>
 
-      {/* Customer selection */}
+      {/* Select Customer */}
       <label>Select Customer:</label>
       <select value={selectedCustomer} onChange={(e) => setSelectedCustomer(e.target.value)}>
         <option value="">-- Select Customer --</option>
@@ -79,4 +80,4 @@ const BookingForm = ({
   );
 };
 
-export default BookingForm;
+export default CreateBookingForm;
