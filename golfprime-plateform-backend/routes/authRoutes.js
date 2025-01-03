@@ -9,6 +9,9 @@ router.post('/pro/login', authController.proLogin);
 // Route for Customer login
 router.post('/customer/login', authController.customerLogin);
 
+// Route for session check
+router.get('/check-session', authController.checkSession);
+
 // Route for logout
 router.post('/logout', authController.logout);
 

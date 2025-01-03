@@ -1,0 +1,39 @@
+.available-slots-container {
+  width: 100%;
+}
+
+h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #333;
+  text-align: center;
+}
+
+.slot-button {
+  padding: 8px 12px; /* Reduced padding for a better size */
+  margin: 5px auto; /* Add spacing and center the buttons */
+  border: 1px solid #ddd;
+  background-color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center; /* Align text centrally */
+  width: 90%; /* Keep buttons responsive but not full width */
+  max-width: 250px; /* Limit the maximum width */
+  display: block; /* Center buttons horizontally */
+}
+
+.slot-button:hover {
+  background-color: #f0f0f0;
+}
+
+.slot-button.selected {
+  background-color: #007bff;
+  color: white;
+  border-color: #0056b3;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  text-align: center;
+}

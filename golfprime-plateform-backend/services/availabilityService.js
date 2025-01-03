@@ -1,5 +1,7 @@
 const { WorkingHours, Bookings, Unavailabilities } = require('../models');
 const { Op } = require('sequelize');
+const { timeToUTC } = require('../services/dateService');
+
 
 /**
  * Processes availability for a given date and pro by checking working hours,
@@ -21,6 +23,9 @@ async function processAvailability(proId, selectedDate) {
 
   // Logic to process availability based on working hours, bookings, and unavailabilities
   const availableSlots = calculateSlots(workingHours, bookings, unavailabilities, selectedDate);
+
+  console.log(`Available slots :`, availableSlots);
+
   return availableSlots;
 }
 
@@ -36,7 +41,7 @@ async function getWorkingHours(proId, date) {
     // We specify 'en-US' for the locale to ensure consistency in day names.
     // We call `.toLowerCase()` to ensure the day string is in lowercase to match the database format.
     const dayOfWeek = date.toLocaleString('en-US', { weekday: 'long' }).toLowerCase();
-    console.log(`Fetching working hours for pro_id: ${proId}, dayOfWeek: ${dayOfWeek}`);
+    //console.log(`Fetching working hours for pro_id: ${proId}, dayOfWeek: ${dayOfWeek}`);
     const workingHour = await WorkingHours.findOne({
       where: {
         pro_id: proId,
@@ -52,10 +57,14 @@ async function getWorkingHours(proId, date) {
     // If a `workingHour` entry was found, return an object with `start` and `end` properties.
     // `start` is assigned the value of `workingHour.start_time`, and `end` is assigned `workingHour.end_time`.
     // This object will contain the working hours (start and end times) for the given pro on the specified day.
-    return {
-      start: workingHour.start_time,
-      end: workingHour.end_time
-    };
+
+    const start = workingHour.start_time;
+    const end = workingHour.end_time;
+
+    // Log working hours before returning
+    //console.log(`Working hours for pro_id: ${proId}, dayOfWeek: ${dayOfWeek}, start: ${start}, end: ${end}`); 
+
+    return { start, end };
   }  
 
 /**
@@ -72,6 +81,8 @@ async function getBookings(proId, date) {
     const endOfDay = new Date(date);
     endOfDay.setHours(23, 59, 59, 999); // Set to just before midnight at the end of the day.
   
+    console.log(`Start of the day of getBookings: ${startOfDay}, end of the day: ${endOfDay}`);
+
     // Query the `Bookings` table to find all bookings that match the conditions
     const bookings = await Bookings.findAll({
       where: {
@@ -105,6 +116,8 @@ async function getUnavailabilities(proId, date) {
     const endOfDay = new Date(date);
     endOfDay.setHours(23, 59, 59, 999);
   
+    console.log(`Start of the day of getUnavailabilities: ${startOfDay}, end of the day: ${endOfDay}`);
+
     const unavailabilities = await Unavailabilities.findAll({
       where: {
         pro_id: proId,
@@ -172,13 +185,21 @@ function calculateSlots(workingHours, bookings, unavailabilities, date, slotDura
   // Initialize an empty array to hold the available slots for the day.
   const slots = [];
 
+  // Convert workingHours to UTC Date objects
+  let currentStart = timeToUTC(workingHours.start, date);
+  const workingEnd = timeToUTC(workingHours.end, date);
+  
+  console.log(`date calculateStols: ${date.toISOString()}`);
+  console.log(`currentStart calculateSlots (UTC): ${currentStart.toISOString()}`);
+  console.log(`workingEnd calculateSlots (UTC): ${workingEnd.toISOString()}`);
+
   // Create a `currentStart` Date object set to the start of the working hours on the specified `date`.
-  let currentStart = new Date(date);
-  currentStart.setHours(...workingHours.start.split(':').map(Number)); // Set hours to the start time of the working hours.
+  //let currentStart = new Date(date);
+  //currentStart.setHours(...workingHours.start.split(':').map(Number)); // Set hours to the start time of the working hours.
 
   // Create a `workingEnd` Date object set to the end of the working hours on the specified `date`.
-  const workingEnd = new Date(date);
-  workingEnd.setHours(...workingHours.end.split(':').map(Number)); // Set hours to the end time of the working hours.
+  //const workingEnd = new Date(date);
+  //workingEnd.setHours(...workingHours.end.split(':').map(Number)); // Set hours to the end time of the working hours.
 
   const now = new Date(); // Current date and time for checking past slots.
 
@@ -187,11 +208,14 @@ function calculateSlots(workingHours, bookings, unavailabilities, date, slotDura
       // Define the start and end of the current slot.
       const slotStart = new Date(currentStart);
       const slotEnd = new Date(slotStart);
+
       // Calculate slot end by adding the slotDuration
       slotEnd.setMinutes(slotStart.getMinutes() + slotDuration);
 
       console.log(`Checking slot: ${slotStart.toISOString()} - ${slotEnd.toISOString()}`);
 
+      // Ensure the slot does not exceed the workingEnd time
+      if (slotEnd > workingEnd) break;
 
       const isPastConflict = checkTimeConflict(slotStart, slotEnd, [], { disallowPast: true, now });
       const isBookingConflict = checkTimeConflict(slotStart, slotEnd, bookings);

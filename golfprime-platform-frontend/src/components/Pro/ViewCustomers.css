@@ -1,0 +1,63 @@
+.view-customers-container {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.customer-title {
+  font-size: 1.8rem;
+  color: #333;
+  text-align: center; /* Align the title to the left */
+  margin-bottom: 20px;
+}
+
+.error-message {
+  color: red;
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.no-customers {
+  text-align: center;
+  font-size: 1rem;
+  color: #666;
+}
+
+.customer-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.customer-item {
+  display: flex;
+  flex-direction: row; /* Align all fields in one row */
+  justify-content: flex-start; /* Align content to the left */
+  align-items: center;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-size: 1rem;
+  line-height: 1.5;
+  height: 50px;
+  overflow: hidden;
+}
+
+.customer-field {
+  margin-right: 20px; /* Add spacing between fields */
+  white-space: nowrap; /* Prevent wrapping */
+  overflow: hidden; /* Hide overflow text */
+  text-overflow: ellipsis; /* Add ellipsis for long text */
+}
+
+.customer-field strong {
+  color: #007bff;
+}

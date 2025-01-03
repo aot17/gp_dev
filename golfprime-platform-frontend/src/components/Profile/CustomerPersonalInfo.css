@@ -1,0 +1,80 @@
+.personal-info-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.profile-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.field-label {
+  font-weight: bold;
+  flex: 1;
+  color: #555;
+}
+
+.field-value {
+  flex: 2;
+  color: #333;
+}
+
+.edit-button, .save-button, .cancel-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-left: 10px;
+}
+
+.edit-button:hover, .save-button:hover, .cancel-button:hover {
+  background-color: #0056b3;
+}
+
+.cancel-button {
+  background-color: #dc3545;
+}
+
+.cancel-button:hover {
+  background-color: #a71d2a;
+}
+
+input, select {
+  padding: 5px;
+  font-size: 0.9rem;
+  flex: 2;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: white;
+}
+
+select {
+  appearance: none; /* Removes native dropdown styling for consistency */
+  -webkit-appearance: none; /* Safari compatibility */
+  -moz-appearance: none; /* Firefox compatibility */
+  background-image: url("data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='5'><path fill='%23333' d='M0 0h10L5 5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px 5px;
+}
+
+select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.status-message {
+  margin-top: 20px;
+  color: green;
+}

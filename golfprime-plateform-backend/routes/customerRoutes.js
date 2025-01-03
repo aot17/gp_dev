@@ -7,9 +7,6 @@ const customerController = require('../controllers/customerController');
 // GET Customer Profile
 router.get('/profile', authMiddleware(['customer']), customerController.getProfile);
 
-// GET Customer Bookings
-router.get('/bookings', authMiddleware(['customer']), customerController.getBookings);
-
 // POST a new customer (Signup)
 router.post('/signup', customerController.signup);
 

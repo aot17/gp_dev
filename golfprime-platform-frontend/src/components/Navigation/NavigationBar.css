@@ -1,7 +1,7 @@
 .navigation-bar {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: center; /* Ensures vertical alignment */
   background-color: #333;
   padding: 10px 20px;
   color: white;
@@ -13,27 +13,29 @@
   text-decoration: none;
 }
 
-.nav-right {
-  display: flex;
-  gap: 15px;
-}
-
-.nav-link {
-  color: white;
-  text-decoration: none;
-}
-
-.nav-link:hover {
+.nav-left .nav-brand:hover {
   text-decoration: underline;
 }
 
-.logout-button {
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
+.nav-right {
+  display: flex;
+  gap: 15px;
+  align-items: center; /* Ensures all nav links and buttons are vertically aligned */
 }
 
+.nav-link,
+.logout-button {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem; /* Consistent font size */
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-flex; /* Ensures inline alignment */
+  align-items: center; /* Vertically centers text within buttons */
+}
+
+.nav-link:hover,
 .logout-button:hover {
   text-decoration: underline;
 }

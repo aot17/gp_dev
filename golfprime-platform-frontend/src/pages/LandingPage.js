@@ -20,14 +20,19 @@ function LandingPage() {
 
   return (
     <div className="landing-page">
-      <main>
-        <h1>Welcome to Golf Prime Platform</h1>
-        <h2>Affiliated Pros</h2>
+      <main className="landing-main">
+        <h1>Welcome to <span className="highlight">Golf Prime Platform</span></h1>
+        <p className="description">Book sessions with professional golf trainers near you and improve your game today!</p>
+        
+        <h2 className="pros-title">Our Affiliated Pros</h2>
         <ul className="pros-list">
           {pros.map(pro => (
-            <li key={pro.pro_id}>
+            <li key={pro.pro_id} className="pro-card">
               <Link to={`/booking/${pro.pro_id}`} className="pro-link">
-                {pro.first_name} {pro.last_name}
+                <div className="pro-info">
+                  <h3>{pro.first_name} {pro.last_name}</h3>
+                  <p>Book Now</p>
+                </div>
               </Link>
             </li>
           ))}

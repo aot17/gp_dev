@@ -1,4 +1,3 @@
-// src/components/CustomerLogin.js
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
@@ -7,40 +6,54 @@ function CustomerLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:3000/auth/customer/login', {
-        email,
-        password
-      });
+      // Make the login request
+      await axios.post(
+        'http://localhost:3000/auth/customer/login',
+        { email, password },
+        { withCredentials: true } // Enable cookies for Passport.js sessions
+      );
 
-      const token = response.data.token;
-      localStorage.setItem('customerToken', token); // Store token for later use
       setMessage('Login successful!');
-      
-      // Redirect to profile page after successful login
-      navigate('/customer-profile');
-
+      // Reload the page to reflect the logged-in state
+      //window.location.reload();
+      //navigate('/http://localhost:3000'); // Redirect on success
+      window.location.href = '/'; // Redirects to the landing page dynamically
     } catch (error) {
-      setMessage('Login failed: ' + error.response?.data?.message || 'Unknown error');
+      const errorMessage =
+        error.response?.data?.message || 'Login failed due to server error.';
+      setMessage(errorMessage);
     }
   };
 
   return (
-    <div>
+    <div className="login-container">
       <h2>Customer Login</h2>
       <form onSubmit={handleSubmit}>
-        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
         <button type="submit">Login</button>
       </form>
       <p>{message}</p>
       <p>
-      Pas encore de compte ? <Link to="/customer-signup">Inscrivez-vous !</Link>
+        Pas encore de compte ? <Link to="/customer-signup">Inscrivez-vous !</Link>
       </p>
     </div>
   );

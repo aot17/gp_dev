@@ -1,41 +1,26 @@
-// controllers/customerController.js
 const bcrypt = require('bcryptjs');
 const { Customers, Bookings, Pros, Golfs, Authentication } = require('../models');
 
-// Controller to get the customer profile
+// Get the customer profile
 exports.getProfile = async (req, res) => {
   try {
-    const customer = await Customers.findByPk(req.user.id, {
+    const customerId = req.user.id;
+    console.log('Fetching profile for customer ID:', customerId);
+    
+    const customer = await Customers.findOne({
+      where: { customer_id: customerId },
       attributes: ['first_name', 'last_name', 'email', 'phone', 'gender'],
     });
-    if (!customer) {
-      return res.status(404).json({ message: 'Customer not found' });
-    }
+
+    console.log('Fetched customer data:', customer.toJSON()); // Log data for debugging
     res.json(customer);
   } catch (error) {
-    console.error('Error retrieving customer profile:', error);
-    res.status(500).json({ message: 'Failed to retrieve customer profile' });
+    console.error('Error fetching customer profile:', error);
+    res.status(500).json({ error: 'Failed to fetch customer profile.' });
   }
 };
 
-// Controller to get customer bookings
-exports.getBookings = async (req, res) => {
-  try {
-    const bookings = await Bookings.findAll({
-      where: { customer_id: req.user.id },
-      include: [
-        { model: Pros, attributes: ['first_name', 'last_name'] },
-        { model: Golfs, attributes: ['name', 'address'] }
-      ]
-    });
-    res.json(bookings);
-  } catch (error) {
-    console.error('Error retrieving bookings:', error);
-    res.status(500).json({ message: 'Failed to retrieve bookings' });
-  }
-};
-
-// Controller to create a new customer (Signup)
+// Create a new customer (Signup)
 exports.signup = async (req, res) => {
   const { first_name, last_name, gender, email, phone, password } = req.body;
 
@@ -50,7 +35,7 @@ exports.signup = async (req, res) => {
   }
 };
 
-// Controller to update customer profile
+// Update customer profile
 exports.updateProfile = async (req, res) => {
   try {
     const customer = await Customers.findByPk(req.user.id);
@@ -73,7 +58,7 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
-// Controller to delete customer account
+// Delete customer account
 exports.deleteAccount = async (req, res) => {
   try {
     const customer = await Customers.findByPk(req.user.id);

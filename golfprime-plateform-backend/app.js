@@ -12,7 +12,10 @@ require('dotenv').config(); // Import and load environment variables.
 const app = express(); // Create an Express app.
 const port = process.env.PORT || 3000; // Set the server port from env variables or default to 3000.
 
-app.use(cors()); // Enable CORS to allow cross-origin requests from frontend applications.
+app.use(cors({
+  origin: 'http://localhost:3001', // Frontend URL
+  credentials: true // Allow cookies to be sent
+}));
 app.use(bodyParser.json()); // Use bodyParser to parse JSON-formatted request bodies.
 
 // Configure session middleware
@@ -20,7 +23,11 @@ app.use(session({
   secret: process.env.SESSION_SECRET, // The session secret, which should be a secure string from environment variables.
   resave: false, // Avoid resaving session data if nothing changed.
   saveUninitialized: false, // Do not save sessions that are uninitialized.
-  cookie: { secure: false } // Enable secure cookies only if using HTTPS (use `secure: true` for production).
+  cookie: { 
+    secure: false, // TO CHANGE IN PROD
+    httpOnly: true,
+    sameSite: 'lax' // TO CHANGE IN PROD
+  }
 }));
 
 // Initialize Passport and configure it to use sessions
@@ -85,6 +92,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser((user, done) => {
   // Retrieve the user object from the session.
+  //console.log('Deserializing user:', user);
   done(null, user); // Re-attach `user` to the request after retrieval from session storage.
 });
 
@@ -103,9 +111,9 @@ const availabilityRoutes = require('./routes/availabilityRoutes');
 // Register the routes with specific base paths
 app.use('/golf', golfRoutes);
 app.use('/customer', customerRoutes);
+app.use('/pro/bookings', bookingProRoutes);    
 app.use('/pro', proRoutes);
 app.use('/customer/bookings', bookingCustomerRoutes); // Routes for customers
-app.use('/pro/bookings', bookingProRoutes);    
 app.use('/course', courseRoutes);
 app.use('/auth', authRoutes); // Authentication routes for login, logout, etc.
 app.use('/unavailabilities', unavailabilitiesRoutes);
