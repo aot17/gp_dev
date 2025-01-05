@@ -121,14 +121,29 @@ async function getUnavailabilities(proId, date) {
     const unavailabilities = await Unavailabilities.findAll({
       where: {
         pro_id: proId,
-        Date_start: { [Op.between]: [startOfDay, endOfDay] }
+        [Op.or]: [
+          {
+            // Unavailability starts before or during the day and ends after the start of the day
+            Date_start: { [Op.lte]: endOfDay },
+            Date_end: { [Op.gte]: startOfDay },
+          },
+          {
+            // Unavailability fully overlaps the day
+            [Op.and]: [
+              { Date_start: { [Op.lte]: startOfDay } },
+              { Date_end: { [Op.gte]: endOfDay } },
+            ],
+          },
+        ],
       },
       attributes: ['Date_start', 'Date_end']
     });
+
+    console.log(`Unavailabilities fetched: ${JSON.stringify(unavailabilities)}`);
   
     return unavailabilities.map(unavail => ({
       start: new Date(unavail.Date_start),
-      end: new Date(unavail.Date_end)
+      end: new Date(unavail.Date_end),
     }));
   }
 

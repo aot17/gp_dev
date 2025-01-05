@@ -1,19 +1,18 @@
 import React from 'react';
-import './ManageBookings.css'; // For modal styles
+import './CalendarSettings.css'
 
-const BookingModal = ({ visible, onClose, children }) => {
-  // Don't render anything if modal is not visible
-  if (!visible) return null;
-
+const BookingModal = ({ visible, onClose, children, errorMessage }) => {
   return (
     <>
-      {/* Overlay to close modal when clicked outside */}
-      <div className="modal-overlay" onClick={onClose}></div>
-      <div className="modal">
-        <div className="modal-content">
-          {children} {/* Render form or other content passed as children */}
-        </div>
-      </div>
+      {visible && (
+        <>
+          <div className="modal-overlay" onClick={onClose}></div>
+          <div className="modal">
+            {errorMessage && <p className="error-message">{errorMessage}</p>}
+            <div className="modal-content">{children}</div>
+          </div>
+        </>
+      )}
     </>
   );
 };
