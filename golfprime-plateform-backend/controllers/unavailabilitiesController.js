@@ -42,6 +42,81 @@ exports.addUnavailability = async (req, res) => {
   }
 };
 
+exports.updateUnavailability = async (req, res) => {
+
+  console.log('Update Request Params:', req.params);
+  console.log('Update Request Body:', req.body);
+  const unavailId = req.params.id; // Extract unavailability ID from params
+  const { Date_start, Date_end, reason } = req.body; // Extract fields from the body
+  const pro_id = req.user.id; // Extract the logged-in pro's ID
+
+  try {
+    const { start, end } = validateUnavailabilityDates(Date_start, Date_end);
+
+    // Fetch the unavailability
+    const unavailability = await Unavailabilities.findByPk(unavailId);
+
+    if (!unavailability) {
+      return res.status(404).json({ message: 'Unavailability not found.' });
+    }
+
+    // Ensure the unavailability belongs to the logged-in pro
+    if (unavailability.pro_id !== pro_id) {
+      return res.status(403).json({ message: 'Unauthorized access.' });
+    }
+
+    // Check for overlapping bookings
+    const isBookingOverlap = await hasOverlappingBookings(pro_id, start, end);
+    if (isBookingOverlap) {
+      return res.status(400).json({ message: 'Overlaps with an existing booking.' });
+    }
+
+    // Check for overlapping unavailabilities
+    const isUnavailabilityOverlap = await hasOverlappingUnavailabilities(pro_id, start, end, unavailId);
+    if (isUnavailabilityOverlap) {
+      return res.status(400).json({ message: 'Overlaps with another unavailability.' });
+    }
+
+    // Update the unavailability
+    const updatedUnavailability = await unavailability.update({
+      Date_start: start,
+      Date_end: end,
+      reason,
+    });
+
+    res.json(updatedUnavailability);
+  } catch (error) {
+    console.error('Error updating unavailability:', error);
+    res.status(500).json({ message: 'Failed to update unavailability.', error: error.message });
+  }
+};
+
+exports.deleteUnavailability = async (req, res) => {
+  const unavailId = req.params.id; // Get unavailability ID
+  const pro_id = req.user.id; // Logged-in pro's ID
+
+  try {
+    // Fetch unavailability
+    const unavailability = await Unavailabilities.findByPk(unavailId);
+
+    if (!unavailability) {
+      return res.status(404).json({ message: 'Unavailability not found.' });
+    }
+
+    if (unavailability.pro_id !== pro_id) {
+      return res.status(403).json({ message: 'Unauthorized access.' });
+    }
+
+    // Delete unavailability
+    await unavailability.destroy();
+
+    res.json({ message: 'Unavailability deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting unavailability:', error);
+    res.status(500).json({ message: 'Failed to delete unavailability.', error: error.message });
+  }
+};
+
 // Get all unavailabilities for the logged-in pro (pro back office)
 exports.getProBackOfficeUnavailabilities = async (req, res) => {
   const pro_id = req.user.id; // Use authenticated user's ID

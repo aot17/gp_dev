@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './CalendarSettings.css'
 import { fetchAvailableSlots } from '../../services/CalendarServices';
 
 const EditBookingForm = ({

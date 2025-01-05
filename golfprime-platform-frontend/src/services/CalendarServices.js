@@ -49,7 +49,7 @@ export const fetchUnavailabilities = async (setEvents, setErrorMessage) => {
         end.getHours() === 23 && end.getMinutes() === 59;
 
       return {
-        id: unavailability.id,
+        id: unavailability.unavail_id,
         title: `Unavailable: ${unavailability.reason}`,
         start,
         end,
@@ -58,7 +58,11 @@ export const fetchUnavailabilities = async (setEvents, setErrorMessage) => {
       };
     });
 
-    setEvents((prevEvents) => [...prevEvents, ...unavailabilities]);
+    setEvents((prevEvents) => [
+      ...prevEvents.filter((event) => event.className !== 'unavailability-event'), // Remove old unavailabilities
+      ...unavailabilities, // Add the updated ones
+    ]);
+          
   } catch (error) {
     console.error('Error fetching unavailabilities:', error);
     setErrorMessage('Failed to fetch unavailabilities.');

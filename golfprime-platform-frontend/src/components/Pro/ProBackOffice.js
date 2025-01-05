@@ -9,7 +9,6 @@ function ProBackOffice() {
   return (
     <div className="pro-backoffice-container">
       <aside className="pro-sidebar">
-        <h2>Pro Back Office</h2>
         <ul>
           <li
             className={activeSection === 'calendar' ? 'active' : ''}

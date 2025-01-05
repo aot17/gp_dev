@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './CalendarSettings.css'
 import CreateBookingForm from './CreateBookingForm'; // Form for bookings
 import EditBookingForm from './EditBookingForm';
 

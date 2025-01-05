@@ -3,14 +3,11 @@ import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 import axios from 'axios';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
+import './CalendarSettings.css'
 import BookingModal from './BookingModal';
 import ManageBookings from './ManageBookings';
 import ManageUnavailabilities from './ManageUnavailabilities';
-import {
-  fetchAvailableSlots,
-  fetchBookings,
-  fetchUnavailabilities,
-} from '../../services/CalendarServices';
+import { fetchAvailableSlots, fetchBookings, fetchUnavailabilities } from '../../services/CalendarServices';
 
 // Localization
 const locales = {
@@ -35,9 +32,10 @@ function CalendarDashboard() {
   const [preSelectedSlot, setPreSelectedSlot] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalType, setModalType] = useState(null); // 'booking', 'editBooking', 'unavailability'
+  const [modalType, setModalType] = useState(null);
   const [selectedBooking, setSelectedBooking] = useState(null);
-
+  const [selectedUnavailability, setSelectedUnavailability] = useState(null);
+  
   // Fetch events (Fix: Added fetchEvents as a function here)
   const fetchEvents = async () => {
     try {
@@ -59,10 +57,6 @@ function CalendarDashboard() {
       .get('http://localhost:3000/pro/customers', { withCredentials: true })
       .then((response) => setCustomers(response.data))
       .catch((error) => console.error('Error fetching customers:', error));
-  }, []);
-
-  useEffect(() => {
-    fetchEvents(); // Fetch events when the component loads
   }, []);
 
   // Handle slot selection (CREATE)
@@ -90,13 +84,17 @@ function CalendarDashboard() {
 
   // Handle event selection (EDIT)
   const handleSelectEvent = (event) => {
-    console.log('Selected Event:', event); // Debug log to verify the selected event
-    setModalType('editBooking');
-    setSelectedBooking({
-      id: event.id,
-      Date_start: event.start.toISOString(),
-      Date_end: event.end.toISOString(),
-    }); // Pass selected event data
+    if (event.className === 'unavailability-event') {
+      setModalType('editUnavailability');
+      setSelectedUnavailability(event);
+    } else {
+      setModalType('editBooking');
+      setSelectedBooking({
+        id: event.id,
+        Date_start: event.start.toISOString(),
+        Date_end: event.end.toISOString(),
+      });
+    }
     setModalVisible(true);
   };
 
@@ -116,8 +114,34 @@ function CalendarDashboard() {
 
   return (
     <div className="calendar-dashboard">
-      <h2>Manage Bookings and Unavailabilities</h2>
+      <h2>Manage Bookings</h2>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
+
+      <div className="button-container">
+        {/* New Booking Button */}
+        <button
+          className="new-button new-booking-button" // Add both general and specific classes
+          onClick={() => {
+            setModalType('booking'); // Trigger create mode for booking
+            setSelectedBooking(null); // Clear previous selections
+            setModalVisible(true); // Open modal
+          }}
+        >
+          New Booking
+        </button>
+
+        {/* New Unavailability Button */}
+        <button
+          className="new-button new-unavailability-button" // Add both general and specific classes
+          onClick={() => {
+            setModalType('unavailability'); // Trigger create mode for unavailability
+            setSelectedUnavailability(null); // Clear previous selections
+            setModalVisible(true); // Open modal
+          }}
+        >
+          New Unavailability
+        </button>
+      </div>
 
       <Calendar
         localizer={localizer}
@@ -141,6 +165,7 @@ function CalendarDashboard() {
             setModalVisible(false);
             setModalType(null);
             setSelectedBooking(null);
+            setSelectedUnavailability(null);
           }}
         >
           {modalType === 'booking' && (
@@ -175,8 +200,23 @@ function CalendarDashboard() {
               selectedDate={selectedDate}
               setEvents={setEvents}
               setModalVisible={setModalVisible}
+              fetchEvents={fetchEvents}
+              mode="create"
             />
           )}
+
+          {modalType === 'editUnavailability' && selectedUnavailability && (
+            <ManageUnavailabilities
+              selectedDate={new Date(selectedUnavailability.start)}
+              setEvents={setEvents}
+              setModalVisible={setModalVisible}
+              unavailId={selectedUnavailability.id}
+              existingUnavailability={selectedUnavailability}$
+              fetchEvents={fetchEvents}
+              mode="edit"
+            />
+          )}
+
         </BookingModal>
       )}
     </div>

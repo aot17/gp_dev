@@ -1,5 +1,5 @@
 import React from 'react';
-import './ManageBookings.css'; // For modal styles
+import './CalendarSettings.css'
 
 const BookingModal = ({ visible, onClose, children, errorMessage }) => {
   return (

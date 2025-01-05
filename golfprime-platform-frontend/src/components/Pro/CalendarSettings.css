@@ -242,3 +242,51 @@ button:disabled {
   color: #666;
   cursor: not-allowed;
 }
+
+/* ============================= */
+/* New Buttons Styling           */
+/* ============================= */
+
+/* General Button Styling */
+.new-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-right: 10px;
+  border: none;
+}
+
+/* Booking Button (Blue) */
+.new-booking-button {
+  background-color: #3174ad; /* Blue */
+  color: white;
+  border: 1px solid #3174ad;
+}
+
+.new-booking-button:hover {
+  background-color: #245d91;
+  transform: scale(1.05);
+}
+
+/* Unavailability Button (Gray) */
+.new-unavailability-button {
+  background-color: gray; /* Gray */
+  color: white;
+  border: 1px solid gray;
+}
+
+.new-unavailability-button:hover {
+  background-color: #5c5c5c;
+  transform: scale(1.05);
+}
+
+/* Button Container */
+.button-container {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px; /* Space between buttons */
+  justify-content: flex-end; /* Align to the right */
+}

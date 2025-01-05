@@ -13,4 +13,10 @@ router.get('/probackoffice', authMiddleware(['pro']), unavailabilitiesController
 // Route to get all unavailabilities for a specific pro
 router.get('/:pro_id', unavailabilitiesController.getProUnavailabilities);
 
+// Route to add a new unavailability (pro only)
+router.put('/:id', authMiddleware(['pro']), unavailabilitiesController.updateUnavailability);
+
+// Route to add a new unavailability (pro only)
+router.delete('/:id', authMiddleware(['pro']), unavailabilitiesController.deleteUnavailability);
+
 module.exports = router;
